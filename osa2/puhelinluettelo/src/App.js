@@ -29,8 +29,8 @@ const App = (props) => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map(persons =>
-          <Person key={persons.id} persons={persons} />
+        {persons.map(person =>
+          <Person key={person.id} person={person} />
         )}
       </ul>
     </div>
