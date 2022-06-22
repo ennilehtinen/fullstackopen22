@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Person from './components/Person'
+import Alert from './components/Alert'
 
 const App = (props) => {
   const [persons, setPersons] = useState(props.persons)
@@ -11,8 +12,12 @@ const App = (props) => {
       name: newName,
       id: persons.length + 1,
     }
-    setPersons(persons.concat(nameObject))
-    setNewName('')
+    if (persons.find(person => person.name === nameObject.name)) {
+      Alert(nameObject)
+    } else {
+      setPersons(persons.concat(nameObject))
+      setNewName('')
+    }
   }
 
   const handleNameChange = (event) => {
