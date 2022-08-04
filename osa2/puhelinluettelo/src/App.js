@@ -5,18 +5,22 @@ import Alert from './components/Alert'
 const App = (props) => {
   const [persons, setPersons] = useState(props.persons)
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
-    const nameObject = {
+    const contactObject = {
       name: newName,
+      number: newNumber,
       id: persons.length + 1,
     }
-    if (persons.find(person => person.name === nameObject.name)) {
-      Alert(nameObject)
-    } else {
-      setPersons(persons.concat(nameObject))
+    if (persons.find(person => person.name === contactObject.name)) {
+      Alert(contactObject)
+    }
+    else {
+      setPersons(persons.concat(contactObject))
       setNewName('')
+      setNewNumber('')
     }
   }
 
@@ -25,12 +29,18 @@ const App = (props) => {
     setNewName(event.target.value)
   }
 
+  const handleNumberChange = (event) => {
+    console.log(event.target.value)
+    setNewNumber(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}>
-        name: <input value={newName} onChange={handleNameChange} />
-        <button type="submit">add</button>
+      <form onSubmit={addPerson}>
+        <div>name: <input value={newName} onChange={handleNameChange} /></div>
+        <div>number: <input value={newNumber} onChange={handleNumberChange} /></div>
+        <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
       <ul>
