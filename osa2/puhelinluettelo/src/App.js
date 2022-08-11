@@ -36,7 +36,6 @@ const App = (props) => {
   }
 
   const handleSearchChange = (event) => {
-    console.log(event.target.value)
     setNewSearch(event.target.value)
   }
 
