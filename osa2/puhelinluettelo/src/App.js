@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import Person from './components/Person'
 import Alert from './components/Alert'
 
@@ -36,8 +37,8 @@ const ContactList = ({ filtered }) => {
   )
 }
 
-const App = (props) => {
-  const [persons, setPersons] = useState(props.persons)
+const App = () => {
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setNewSearch] = useState('')
@@ -77,6 +78,15 @@ const App = (props) => {
     ? persons
     : persons.filter(person =>
       person.name.toLowerCase().includes(search.toLowerCase()))
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons').then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
 
   return (
     <div>
