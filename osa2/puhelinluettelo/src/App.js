@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import Person from './components/Person'
 import Alert from './components/Alert'
+import personService from './services/persons'
 
 const Filter = ({ search, handleSearch }) => {
   return (
@@ -71,14 +71,19 @@ const App = () => {
     ) {
       Alert(contactObject)
     } else {
-      axios
-        .post('http://localhost:3001/persons', contactObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
-          setNewName('')
-          setNewNumber('')
-        })
+      personService.create(contactObject).then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
     }
+  }
+
+  const removePerson = event => {
+    event.preventDefault()
+    personService.delContact().then(removedPerson => {
+      setPersons(persons.concat(removedPerson))
+    })
   }
 
   const handleNameChange = event => {
@@ -103,9 +108,9 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios.get('http://localhost:3001/persons').then(response => {
+    personService.getAll().then(initialPersons => {
       console.log('promise fulfilled')
-      setPersons(response.data)
+      setPersons(initialPersons)
     })
   }, [])
 
