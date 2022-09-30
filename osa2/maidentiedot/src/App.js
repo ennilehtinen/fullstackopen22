@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-console.log(process.env.REACT_APP_WEATHER_API_KEY)
+console.log('API KEY', process.env.REACT_APP_WEATHER_API_KEY)
 
 const Search = ({ search, handleSearch }) => {
   return (
@@ -49,9 +49,9 @@ const Countries = ({ countries, search, setInputValue }) => {
 const Country = ({ country }) => (
   <div>
     <h2>{country.name.common}</h2>
-    <p>capital {country.capital.join(', ')}</p>
-    <p>population {country.population}</p>
-    <h2>languages</h2>
+    <p>Capital: {country.capital.join(', ')}</p>
+    <p>Population: {country.population}</p>
+    <h2>Languages</h2>
     <ul>
       {Object.keys(country.languages).map(languageKey => (
         <li key={languageKey}>{country.languages[languageKey]}</li>
@@ -67,7 +67,7 @@ const Weather = ({ country }) => {
   useEffect(() => {
     axios
       .get(
-        `https://api.openweathermap.org/data/3.0/onecall?units=metric&lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
       )
       .then(response => {
         console.log(response.data)
@@ -80,12 +80,16 @@ const Weather = ({ country }) => {
   return (
     <div>
       <h2>Weather in {country.capital[0]}</h2>
-      <p>temperature {weather.current.temp} celcius</p>
+      <p>
+        Temperature: {weather.main.temp} {'\u2103'}
+      </p>
       <img
-        alt={weather.current.weather.description}
-        src={`http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
-      />
-      <p>wind {weather.current.wind_speed} m/s</p>
+        src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+        alt={weather.weather.description}
+      ></img>
+      <p>
+        Wind speed: {weather.wind.speed} {'\u33a7'}
+      </p>
     </div>
   )
 }
@@ -121,5 +125,4 @@ const App = () => {
     </div>
   )
 }
-
 export default App
