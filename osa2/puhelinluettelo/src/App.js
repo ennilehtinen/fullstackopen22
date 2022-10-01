@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Person from './components/Person'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const Filter = ({ search, handleSearch }) => {
@@ -63,6 +64,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setNewSearch] = useState('')
+  const [message, setMessage] = useState()
 
   const addPerson = event => {
     event.preventDefault()
@@ -88,6 +90,7 @@ const App = () => {
               : person
           )
         )
+        showMessage('Contact updated')
       }
     } else {
       personService
@@ -97,12 +100,21 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+      showMessage('New contact added')
     }
+  }
+
+  const showMessage = message => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 2000)
   }
 
   const removePerson = async id => {
     await personService.delContact(id)
     setPersons(() => persons.filter(person => person.id !== id))
+    showMessage('Contact removed')
   }
 
   const handleNameChange = event => {
@@ -136,6 +148,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {!!message && <Notification message={message} />}
       <Filter search={search} handleSearch={handleSearch} />
       <h2>Add new contact</h2>
       <AddContact
