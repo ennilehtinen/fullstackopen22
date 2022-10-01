@@ -66,7 +66,7 @@ const App = () => {
   const [search, setNewSearch] = useState('')
   const [message, setMessage] = useState()
 
-  const addPerson = event => {
+  const addPerson = async event => {
     event.preventDefault()
     const contactObject = {
       name: newName,
@@ -82,15 +82,19 @@ const App = () => {
           `${oldPerson.name} is already added to phonebook, update contact?`
         )
       ) {
-        personService.update(oldPerson.id, contactObject)
-        setPersons(() =>
-          persons.map(person =>
-            person.id === oldPerson.id
-              ? { ...contactObject, id: person.id }
-              : person
+        try {
+          await personService.update(oldPerson.id, contactObject)
+          setPersons(() =>
+            persons.map(person =>
+              person.id === oldPerson.id
+                ? { ...contactObject, id: person.id }
+                : person
+            )
           )
-        )
-        showMessage('Contact updated')
+          showMessage('Contact updated')
+        } catch (e) {
+          showMessage('Contact not found, it might have been deleted', 'Fail')
+        }
       }
     } else {
       personService
@@ -104,8 +108,8 @@ const App = () => {
     }
   }
 
-  const showMessage = message => {
-    setMessage(message)
+  const showMessage = (message, type) => {
+    setMessage({ message, type })
     setTimeout(() => {
       setMessage(null)
     }, 2000)
@@ -148,7 +152,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {!!message && <Notification message={message} />}
+      {!!message?.message && (
+        <Notification message={message.message} type={message.type} />
+      )}
       <Filter search={search} handleSearch={handleSearch} />
       <h2>Add new contact</h2>
       <AddContact
